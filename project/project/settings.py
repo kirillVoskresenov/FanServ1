@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     'serv',
     'accounts',
     'authorization',
-    'sign',
     'django_filters',
     'allauth',
     'allauth.account',
@@ -153,4 +152,5 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_FORMS = {'signup': 'serv.forms.BasicSignupForm'}
+
+LOGOUT_REDIRECT_URL = 'account_login'

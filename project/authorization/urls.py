@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import IndexView
+from .views import AuthView
 
 urlpatterns = [
-    path('', IndexView.as_view())
+    path('accounts/profile', AuthView.as_view())
 ]

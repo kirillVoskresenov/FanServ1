@@ -22,6 +22,6 @@ urlpatterns = [
     path('pages/', include('django.contrib.flatpages.urls')),
     path('fanserv/', include('serv.urls')),
     path('accounts/', include('allauth.urls')),
-    path('sign/', include('sign.urls')),
+    path('', include('authorization.urls')),
 
 ]
