@@ -8,5 +8,5 @@ Detail
 
 <!-- В контенте на странице мы выводим сам товар, идентификатор которого был передан в url -->
 {% block content %}
-<h1>{{ detail }}</h1>
+<a href="{% url 'detail' %}" ></a>
 {% endblock content %}

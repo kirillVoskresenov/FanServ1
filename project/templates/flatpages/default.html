@@ -32,15 +32,15 @@
                <li class="nav-item">
                    <a class="nav-link" href="/fanserv/">Главная страница</a>
                </li>
-               <li class="nav-item">
-                   <a class="nav-link" href="/about/">О нас</a>
+
+               <li class="nav-item active">
+                   <a class="nav-link" href="/accounts/profile/">Мой профиль</a>
                </li>
-               <li class="nav-item">
-                   <a class="nav-link" href="/contacts/">Контакты</a>
-               </li>
-               <li class="nav-item">
-                   <a class="nav-link" href="/fanserv/search/">Поиск</a>
-               </li>
+
+               <li class="nav-item active"><a class="nav-link" href="{% url 'account_login' %}">Войти</a></li>
+
+               <li class="nav-item active"><a class="nav-link" href="{% url 'account_logout' %}" >Выйти</a></li>
+
            </ul>
        </div>
    </div>

@@ -1,7 +1,7 @@
 {% extends "main.html" %}
 
 {% block content %}
-<h1 style="text-align: center;">Страница авторизованного пользователя {{request.user.username}}</h1>
+<h1 style="text-align: center;"> Личный кабинет {{request.user.username}}</h1>
 
 <div> <h3><br />Имя: {{request.user.first_name}}</h3></div>
 <div> <h3><br />Фамилия: {{request.user.last_name}}</h3></div>
@@ -10,6 +10,25 @@
 <br />
 <br />
 <br />
-<button> <a href="sign/logout/">Выйти</a> </button>
+{% if request.user.is_authenticated %}
+    <a href="{% url 'create' %}">Разместить объявление | </a>
+    <a href="{% url 'comment_list' %}">Отклики на объявления | </a>
+    <a href="{% url 'account_logout' %}">Выйти</a>
+{% else %}
+    <a href="{% url 'account_login' %}" >Вход</a>   <a href="{% url 'account_signup' %}" >Регистрация</a>
+{% endif %}
+{% if is_not_authors %}
+<button> <a href="sevr/upgrade"> Хочу Стать автором!</a> </button>
+{% endif %}
+<body>
+    <hr>
 
+    <div align="center"><a class="main_button" href="{% url 'startpage' %}" title="Все объявления">На главную страницу</a></div>
+    <br>
+
+    <div align="center"><a class="main_button_create" href="{% url 'create' %}" title="Создать объявление">Создать объявление</a></div>
+    <br>
+
+</body>
 {% endblock %}
+

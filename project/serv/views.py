@@ -1,10 +1,30 @@
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
-from .models import Post
+from .models import Post, Comment, BaseRegisterForm
 from .filters import PostFilter
-from .forms import PostForm
+from .forms import PostForm, CommentForm, CommForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse_lazy
+from django.shortcuts import redirect
+from django.contrib.auth.models import Group, User
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+
+
+
+@login_required
+def upgrade_me(request):
+    user = request.user
+    premium_group = Group.objects.get(name='authors')
+    if not request.user.groups.filter(name='authors').exists():
+        premium_group.user_set.add(user)
+    return redirect('/')
+
+class BaseRegisterView(CreateView):
+    model = User
+    form_class = BaseRegisterForm
+    success_url = '/'
+
 
 class PostsList(ListView):
     model = Post
@@ -43,15 +63,69 @@ class PostCreate(PermissionRequiredMixin,LoginRequiredMixin,CreateView):
     model = Post
     # и новый шаблон, в котором используется форма.
     template_name = 'create.html'
-    permission_required = ('news.create_post')
+    permission_required = ('create')
 
 class PostUpdate(PermissionRequiredMixin,LoginRequiredMixin,UpdateView):
     form_class = PostForm
     model = Post
     template_name = 'edit.html'
-    permission_required = ('news.update_post')
+    permission_required = ('edit')
 
 class PostDelete(PermissionRequiredMixin,LoginRequiredMixin,DeleteView):
     model = Post
     template_name = 'delete.html'
+    success_url = reverse_lazy('startpage')
+
+
+class PostSearch(ListView):
+    model = Post
+    template_name = 'search.html'
+    queryset = Post.objects.order_by('-article_date')
+    context_object_name = 'search'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        self.filterset = PostFilter(self.request.GET, queryset)
+        return self.filterset.qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filterset'] = self.filterset
+        return context
+
+class CommentCreate(LoginRequiredMixin, CreateView):
+    model = Comment
+    template_name = 'comment_create.html'
+    form_class = CommentForm
+    success_url = '/success/'
+
+
+
+class CommentDetail(LoginRequiredMixin, DetailView):
+    model = Comment
+
+    def get_template_names(self):
+        response = self.get_object()
+        if response.post.author == self.request.user:
+            self.template_name = 'comment_detail.html'
+            return self.template_name
+        else:
+            raise PermissionDenied
+
+
+class CommentList(LoginRequiredMixin, ListView):
+    model = Comment
+    template_name = 'comment_list.html'
+    context_object_name = 'comment_list'
+    ordering = '-time_in'
+
+class CommentUpdate(PermissionRequiredMixin,LoginRequiredMixin,UpdateView):
+    form_class = CommForm
+    model = Post
+    template_name = 'comment_edit.html'
+    permission_required = ('comment_edit')
+
+class CommentDelete(PermissionRequiredMixin,LoginRequiredMixin,DeleteView):
+    model = Post
+    template_name = 'comment_delete.html'
     success_url = reverse_lazy('startpage')
