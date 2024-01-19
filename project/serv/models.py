@@ -9,6 +9,19 @@ from allauth.account.forms import SignupForm
 from django.contrib.auth.models import Group
 from django.dispatch import receiver
 
+
+class Appointment(models.Model):
+    date = models.DateField(
+        default=datetime.utcnow,
+    )
+    client_name = models.CharField(
+        max_length=200
+    )
+    message = models.TextField()
+
+    def __str__(self):
+        return f'{self.client_name}: {self.message}'
+
 class BasicSignupForm(SignupForm):
     def save(self, request):
         user = super(BasicSignupForm, self).save(request)

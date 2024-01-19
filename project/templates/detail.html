@@ -1,12 +1,26 @@
-<!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
 {% extends 'flatpages/default.html' %}
 
-<!-- Название у нас будет Product -->
 {% block title %}
-Detail
+detail
 {% endblock title %}
 
-<!-- В контенте на странице мы выводим сам товар, идентификатор которого был передан в url -->
 {% block content %}
-<a href="{% url 'detail' %}" ></a>
+   <h1>{{ detail.title }}</h1>
+<a href="{% url 'comment_create' %}"> Оставить комментарий | </a>
+ {% if detail %}
+       <table>
+           <tr>
+               <td> <h4><strong>Заголовок&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></h4> </td>
+               <td> <h4><strong>Текст статьи&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></h4> </td>
+           </tr>
+
+           <tr>
+               <td> {{ detail.title }} </td>
+               <td> {{ detail.text }} </td>
+           </tr>
+       </table>
+{% else %}
+       <h2>Такой статьи нет!</h2>
+{% endif %}
+
 {% endblock content %}

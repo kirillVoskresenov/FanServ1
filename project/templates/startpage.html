@@ -27,7 +27,7 @@ news
 
            {% for post in startpage %}
            <tr>
-               <td>{{ post.title }}</td>
+               <td><a href="{% url 'detail' post.id %}">{{ post.title }}</a><td>
                <td>{{ post.article_date|date:'d M Y' }}</td>
                <td>{{ post.text }}</td>
            </tr>

@@ -1,16 +1,17 @@
+import os
 from django.views.generic import ListView, DetailView, UpdateView, DeleteView
-from .models import Post, Comment, BaseRegisterForm
+from .models import Post, Comment, BaseRegisterForm, Appointment
 from .filters import PostFilter
 from .forms import PostForm, CommentForm, CommForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse_lazy
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render, reverse
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-
-
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 @login_required
 def upgrade_me(request):
@@ -97,7 +98,34 @@ class CommentCreate(LoginRequiredMixin, CreateView):
     model = Comment
     template_name = 'comment_create.html'
     form_class = CommentForm
-    success_url = '/success/'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, 'comment_create.html', {})
+
+    def post(self, request, *args, **kwargs):
+        appointment = Comment(
+            user=request.POST['user'],
+            text=request.POST['text'],
+        )
+        appointment.save()
+
+        html_content = render_to_string(
+            'comment_create.html',
+            {
+                'appointment': appointment,
+            }
+        )
+
+        msg = EmailMultiAlternatives(
+            subject=f'{appointment.user}',
+            message=f'Получен новый комментарий по вашему объявлению: "{self.object.text}"',
+            from_email=os.getenv('DEFAULT_FROM_EMAIL'),
+            recipient_list=[]
+        )
+        msg.attach_alternative(html_content, "text/html")  # добавляем html
+        msg.send()  # отсылаем
+
+        return redirect('/')
 
 
 
