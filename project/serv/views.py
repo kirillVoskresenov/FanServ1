@@ -1,25 +1,21 @@
 import os
-from django.views.generic import ListView, DetailView, UpdateView, DeleteView
-from .models import Post, Comment, BaseRegisterForm, Appointment
+from django.views.generic import ListView, DetailView, UpdateView,\
+    DeleteView, CreateView, TemplateView
+from .models import Post, Comment, BaseRegisterForm
 from .filters import PostFilter
-from .forms import PostForm, CommentForm, CommForm
+from .forms import PostForm, CommForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.views.generic.edit import CreateView, UpdateView
+from django.core.mail import send_mail
+from django.contrib import messages
 from django.urls import reverse_lazy
 from django.shortcuts import redirect, render, reverse
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
-@login_required
-def upgrade_me(request):
-    user = request.user
-    premium_group = Group.objects.get(name='authors')
-    if not request.user.groups.filter(name='authors').exists():
-        premium_group.user_set.add(user)
-    return redirect('/')
+class AuthView(LoginRequiredMixin, TemplateView):
+    template_name = 'authorization/auth.html'
 
 class BaseRegisterView(CreateView):
     model = User
@@ -95,38 +91,30 @@ class PostSearch(ListView):
         return context
 
 class CommentCreate(LoginRequiredMixin, CreateView):
+    form_class = CommForm
     model = Comment
-    template_name = 'comment_create.html'
-    form_class = CommentForm
-
-    def get(self, request, *args, **kwargs):
-        return render(request, 'comment_create.html', {})
+    template_name = 'comment_edit.html'
+    permission_required = ('serv.comment_create')
+    success_url = reverse_lazy('startpage')
 
     def post(self, request, *args, **kwargs):
-        appointment = Comment(
-            user=request.POST['user'],
-            text=request.POST['text'],
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user = User.objects.get(id=self.request.user.id)
+            post.post = Post.objects.get(id=self.kwargs['pk'])
+            post.save()
+
+        send_mail(
+            subject=f'Получен отклик по объявлению "{post.user}"',
+            # имя клиента и дата записи будут в теме для удобства
+            message=f'Получен новый отклик по вашему объявлению: "{post.text}"',
+            from_email=os.getenv('DEFAULT_FROM_EMAIL'),  # здесь указываете почту, с которой будете отправлять (об этом попозже)
+            recipient_list=[post.user.email]  # здесь список получателей. Например, секретарь, сам врач и т. д.
         )
-        appointment.save()
-
-        html_content = render_to_string(
-            'comment_create.html',
-            {
-                'appointment': appointment,
-            }
-        )
-
-        msg = EmailMultiAlternatives(
-            subject=f'{appointment.user}',
-            message=f'Получен новый комментарий по вашему объявлению: "{self.object.text}"',
-            from_email=os.getenv('DEFAULT_FROM_EMAIL'),
-            recipient_list=[]
-        )
-        msg.attach_alternative(html_content, "text/html")  # добавляем html
-        msg.send()  # отсылаем
-
-        return redirect('/')
-
+        messages.success(self.request, 'Ваш отклик успешно отправлен!')
+        return super().form_valid(form)
 
 
 class CommentDetail(LoginRequiredMixin, DetailView):
@@ -149,11 +137,27 @@ class CommentList(LoginRequiredMixin, ListView):
 
 class CommentUpdate(PermissionRequiredMixin,LoginRequiredMixin,UpdateView):
     form_class = CommForm
-    model = Post
+    model = Comment
     template_name = 'comment_edit.html'
-    permission_required = ('comment_edit')
+    permission_required = ('serv.comment_edit')
+    success_url = reverse_lazy('startpage')
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.post = Post.objects.get(id=self.kwargs['pk'])
+            post.save()
+        return super().form_valid(form)
+
+
 
 class CommentDelete(PermissionRequiredMixin,LoginRequiredMixin,DeleteView):
-    model = Post
+    model = Comment
     template_name = 'comment_delete.html'
     success_url = reverse_lazy('startpage')
+
+
+
+

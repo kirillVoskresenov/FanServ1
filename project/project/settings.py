@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'fpages',
     'serv',
     'accounts',
-    'authorization',
     'django_filters',
     'allauth',
     'allauth.account',
@@ -161,6 +160,8 @@ EMAIL_HOST_USER = 'kirill.voskresenov'  # ваше имя пользовател
 EMAIL_HOST_PASSWORD = 'ozegcsrckhtakapo'  # пароль от почты
 EMAIL_USE_SSL = True  # Яндекс использует ssl, подробнее о том, что это, почитайте в дополнительных источниках, но включать его здесь обязательно
 
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/fanserv'
 LOGOUT_REDIRECT_URL = 'account_login'
 
 CELERY_BROKER_URL = 'redis://localhost:6379'

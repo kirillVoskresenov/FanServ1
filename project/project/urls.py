@@ -18,10 +18,9 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
+    path('', include('serv.urls')),
     path('admin/', admin.site.urls),
     path('pages/', include('django.contrib.flatpages.urls')),
     path('fanserv/', include('serv.urls')),
-    path('accounts/', include('allauth.urls')),
-    path('', include('authorization.urls'))
-
+    path('accounts/', include('allauth.urls'))
 ]

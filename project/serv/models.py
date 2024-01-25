@@ -113,8 +113,9 @@ class Comment(models.Model):
     text = models.TextField()
     time_in = models.DateTimeField(auto_now_add=True)
 
-
     def __str__(self):
         return self.text
+
+
 
 

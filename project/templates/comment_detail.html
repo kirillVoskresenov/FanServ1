@@ -19,10 +19,11 @@ comment_detail
            <tr>
                <td> {{ comment_detail.title }} </td>
                <td> {{ comment_detail.article_date|date:'M d Y' }} </td>
-               <td> {{ comment_detail.text|censor }} </td>
+               <td> {{ comment_detail.text}} </td>
            </tr>
        </table>
 {% else %}
        <h2>Такой статьи нет!</h2>
 {% endif %}
+
 {% endblock content %}
