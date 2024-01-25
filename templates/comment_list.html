@@ -1,0 +1,26 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<body>
+    <hr>
+
+    <div align="center"><a class="main_button" href="{% url 'startpage' %}" title="Все объявления"><h3 style="text-align: center;"><strong>На главную страницу</strong></h3></a></div>
+    <br>
+
+</body>
+
+{% if comment_list %}
+    {% for i in comment_list %}
+        {% if i.status == True or i.status is None %}
+            <p>{{ i.created|date:'d.m.y' }}</p>
+            <p>{{ i.text }}</p>
+            <p>Отклик на "{{ i.post.title }}" от пользователя {{ i.user }}</p>
+
+            <hr>
+        {% endif %}
+    {% endfor %}
+{% else %}
+    Откликов нет
+{% endif %}
+
+{% endblock content %}

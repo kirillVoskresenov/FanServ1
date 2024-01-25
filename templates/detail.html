@@ -1,0 +1,30 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+detail
+{% endblock title %}
+
+{% block content %}
+   <h1>{{ detail.title }}</h1>
+
+ {% if detail %}
+       <table>
+           <tr>
+               <td> <h4><strong>Заголовок&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></h4> </td>
+               <td> <h4><strong>Текст статьи&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></h4> </td>
+               <td> <h4><strong>Дата&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></h4> </td>
+           </tr>
+
+           <tr>
+               <td> {{ detail.title }} </td>
+               <td> {{ detail.text }} </td>
+               <td> {{ detail.time_in }} </td>
+           </tr>
+       </table>
+{% else %}
+       <h2>Такой статьи нет!</h2>
+{% endif %}
+<a href="{% url 'comment_create' pk=detail.pk %}"> <div style="text-align: center;">
+<h3 style="text-align: center;"><strong>| Оставить комментарий |</strong></h3>
+</div> </a>
+{% endblock content %}
