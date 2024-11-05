@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+</head>
+</html>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <h2><a href="{% url 'upload' %}"></a></h2>
+    <input type="file" name="image">
+    <button type="submit">Загрузить</button>
+</form>
+<body>
+{% if obj %}
+    <h3> Успешно загружено : {(obj.title)}</h3>
+{% endif %}
+</body>

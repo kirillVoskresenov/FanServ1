@@ -1,0 +1,29 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+comment_detail
+{% endblock title %}
+
+{% block content %}
+   <h1>{{ comment_detail.title }}</h1>
+
+   <hr>
+ {% if comment_detail %}
+       <table>
+           <tr>
+               <td> <h4><strong>Заголовок&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></h4> </td>
+               <td> <h4><strong>Дата публикации&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></h4> </td>
+               <td> <h4><strong>Текст статьи&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></h4> </td>
+           </tr>
+
+           <tr>
+               <td> {{ comment_detail.title }} </td>
+               <td> {{ comment_detail.article_date|date:'M d Y' }} </td>
+               <td> {{ comment_detail.text}} </td>
+           </tr>
+       </table>
+{% else %}
+       <h2>Такой статьи нет!</h2>
+{% endif %}
+
+{% endblock content %}
