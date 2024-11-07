@@ -6,7 +6,7 @@ news
 
 {% block content %}
 
-   <h1>Все объявления</h1>
+   <h1>FanServ</h1>
 
    <form action="" method="get">
        {# Переменная, которую мы передали через контекст, может сгенерировать нам форму с полями #}
@@ -21,7 +21,9 @@ news
        <div>
            <p class="date">Опубликовано: {{ post.article_date }} пользователем {{ post.author }}</p>
            <p class="date">Сообщение: {{ post.text }}</p>
-           <p class="date">Категория: <a href="{% url 'detail' post.id %}">{{ post.category }}</a></p>
+           <p class="date">Детально: <a href="{% url 'detail' post.id %}">{{ post.category }}</a></p>
+           <p class="date">Редактировать объявление: <a href="{% url 'edit' post.id %}">{{ post.title }}</a></p>
+           <p class="date">Удалить объявление: <a href="{% url 'delete' post.id %}">{{ post.title }}</a></p>
            {% if post.file %}
                <p><img src="{{ post.file.url }}"></p>
            {% endif %}

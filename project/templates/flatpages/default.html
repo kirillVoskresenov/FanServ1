@@ -1,6 +1,16 @@
+
 <!DOCTYPE html>
+
 <html lang="en">
     <head>
+        <link href="https://myfonts.ru/myfonts?fonts=vandalust" rel="stylesheet" type="text/css" />
+         <style>
+             body {
+               font-family: 'Vandalust', arial;
+               font-size: 80px;
+               text-shadow: 4px 4px 4px #aaa;
+             }
+          </style>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
@@ -50,16 +60,15 @@
    </div>
 </nav>
 
-        <!-- Masthead-->
-        <header class="masthead">
-            <div class="container">
-   <div class="row">
-       <div class="col-lg-12 text-center">
-           {% block content %}
-           {{ flatpage.content }}
-           {% endblock content %}
-       </div>
-   </div>
+
+<div class="col-lg-12 text-center" style="background-color: rgba(250, 235, 215);">
+    <div class="row">
+         <div class="col-lg-12 text-center">
+               {% block content %}
+                   {{ flatpage.content }}
+               {% endblock content %}
+         </div>
+    </div>
 </div>
         </header>
 
